@@ -22,6 +22,9 @@ Component architecture for phone-first admin dashboards — bottom navigation, s
 ### 6. fullstack-agent-squad
 Agent orchestration patterns — maps SuperClaude personas to domain skills, defines feature decomposition (Epic→Story→Task), parallel Wave→Checkpoint execution, subagent context budgets, and persistent KNOWLEDGE.md session memory.
 
+### 7. web-app-qa-audit
+Comprehensive QA audit for live web applications — 8-phase systematic testing of every route, link, button, form, and workflow. Produces a prioritized bug report (P0/P1/P2/P3). Works with any web app via Playwright MCP, curl/fetch, or guided manual testing.
+
 ## Installation
 
 ### Claude Code (CLI)
@@ -40,7 +43,7 @@ cp -r mobile-first-dashboard ~/.claude/skills/
 Or install all at once:
 
 ```bash
-for skill in supabase-nextjs-fullstack multi-currency-ledger property-management-core notification-queue mobile-first-dashboard fullstack-agent-squad; do
+for skill in supabase-nextjs-fullstack multi-currency-ledger property-management-core notification-queue mobile-first-dashboard fullstack-agent-squad web-app-qa-audit; do
   cp -r "$skill" ~/.claude/skills/
 done
 ```
