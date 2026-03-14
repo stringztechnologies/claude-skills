@@ -1,6 +1,6 @@
 ---
 name: cloudflare-site-crawler
-description: "Crawl any website and extract design tokens (colors, fonts, spacing, shadows, border-radius). Use this skill when you need to match a client's existing website branding, extract a design system from a live site, or analyze a competitor's visual design."
+description: "Crawl any website and extract design tokens (colors, fonts, spacing, shadows, border-radius) with visual brand verification. Use this skill when you need to match a client's existing website branding, extract a design system from a live site, or analyze a competitor's visual design."
 ---
 
 # Cloudflare Site Crawler — Design Token Extractor
@@ -51,7 +51,36 @@ grep -oE 'border-radius:[^;}]+' /tmp/site-styles.css | sort -u
 grep -oE 'box-shadow:[^;}]+' /tmp/site-styles.css | sort -u
 ```
 
-### Step 4: Cloudflare Browser Rendering API (Optional)
+### Step 4: Visual Brand Verification (CRITICAL — don't skip)
+
+CSS extraction alone is NOT sufficient for brand matching. Automated crawling captures every color in the stylesheet but cannot determine which colors are the DOMINANT brand identity vs. secondary/utility colors.
+
+After extracting CSS tokens, ALWAYS do a visual verification:
+
+1. Take a screenshot of the site's homepage (use WebFetch, Stitch, or vision API)
+2. Identify the TOP 3 visually dominant colors by looking at:
+   - Hero section background
+   - Primary CTA button color
+   - Navigation highlight/active color
+   - Logo colors
+   - Overall photography tone (warm/cool)
+3. Compare these visual dominants against the extracted CSS colors
+4. If there's a mismatch (e.g., CSS shows green but the site LOOKS gold), trust the visual over the CSS
+5. Document the brand as: "Primary: [visual dominant], Secondary: [visual secondary], Accent: [CTA color]"
+
+#### Common Pitfalls This Prevents
+- Site has utility colors (success green, error red) that the CSS parser picks up as "the accent"
+- Photography and imagery create a warm/cool tone that pure hex values don't capture
+- The actual brand color might be in an image or SVG, not in CSS variables
+- Dark mode / light mode variants can confuse automated extraction
+
+#### Output should include
+- **CSS-extracted palette** (raw data)
+- **Visually-verified palette** (human/AI judgment)
+- **Recommendation**: which colors to use for the portal
+- **Brand assets**: any logo/wordmark/crest that should be incorporated
+
+### Step 5: Cloudflare Browser Rendering API (Optional)
 
 For JS-rendered sites where curl can't capture computed styles:
 
@@ -67,13 +96,13 @@ curl "https://api.cloudflare.com/client/v4/accounts/{account_id}/browser-renderi
   -H "Authorization: Bearer $CF_API_TOKEN"
 ```
 
-### Step 5: Run the Extraction Script
+### Step 6: Run the Extraction Script
 
 ```bash
 ~/.claude/skills/cloudflare-site-crawler/scripts/crawl-and-extract.sh "https://TARGET_SITE/"
 ```
 
-### Step 6: Generate Brand Alignment Report
+### Step 7: Generate Brand Alignment Report
 
 Compare extracted tokens against the target app's `globals.css` / `tailwind.config.ts`:
 - Map each extracted `--variable` to the app's equivalent
