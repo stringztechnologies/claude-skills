@@ -4,6 +4,14 @@
 > From intent to deployed product in one day. Every time.
 > Mechanical enforcement. Parallel execution. Self-verifying agents.
 
+## Prerequisites
+
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — the agentic coding engine
+- [AionUI](https://github.com/iOfficeAI/AionUi) — orchestration GUI for parallel agent sessions
+- [Node.js 20+](https://nodejs.org/) — runtime
+- [Git](https://git-scm.com/) — version control
+- [Coolify](https://coolify.io/) or Vercel — deployment platform
+
 ## Quick Start
 
 Starting a new project? Open Claude and paste:
@@ -48,6 +56,7 @@ Copy these into every new project:
 - `templates/KNOWLEDGE.md.template` — Accumulated learning journal
 - `templates/TASKS.md.template` — Wave-based task tracker
 - `templates/REVIEW.md.template` — Review-specific rules (separate from build rules)
+- `templates/PREFLIGHT.md.template` — Pre-implementation environment & project checklist
 
 ## Skills Library
 
@@ -95,6 +104,16 @@ ln -s $(pwd)/claude-skills/skills/* ~/.claude/skills/
 ln -s $(pwd)/claude-skills/agents/* ~/.claude/agents/
 ```
 
+### Orchestration GUI (recommended):
+```bash
+# macOS
+brew install aionui
+
+# Windows/Linux — download from GitHub releases
+# https://github.com/iOfficeAI/AionUi/releases
+```
+AionUI auto-detects Claude Code and provides a visual workspace for running parallel agent sessions.
+
 ### Per-project setup:
 ```bash
 # Copy templates into a new project
@@ -102,6 +121,7 @@ cp claude-skills/templates/CLAUDE.md.template ./CLAUDE.md
 cp claude-skills/templates/KNOWLEDGE.md.template ./KNOWLEDGE.md
 cp claude-skills/templates/TASKS.md.template ./TASKS.md
 cp claude-skills/templates/REVIEW.md.template ./REVIEW.md
+cp claude-skills/templates/PREFLIGHT.md.template ./PREFLIGHT.md
 ```
 
 ## The Philosophy

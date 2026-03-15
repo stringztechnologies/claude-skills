@@ -78,12 +78,33 @@ Ask one question at a time. After the interview, generate SPEC.md.
     - code-reviewer.md
     - security-auditor.md
 
+### Step 11: Verify Development Environment
+Before implementation begins, confirm all tools are installed and accessible:
+
+**Required:**
+- [ ] Claude Code installed (`claude --version`)
+- [ ] Node.js 20+ (`node --version`)
+- [ ] Git configured (`git config user.name`)
+- [ ] AionUI installed (`aionui --version` or check Applications)
+- [ ] Coolify accessible (deployment target)
+
+**AionUI Setup:**
+AionUI is the orchestration GUI for running parallel agent sessions. Install once:
+- macOS: `brew install aionui`
+- Windows/Linux: Download from https://github.com/iOfficeAI/AionUi/releases
+- On first launch, AionUI auto-detects Claude Code and other installed CLI agents
+- Configure your API keys (Anthropic for Claude, or use existing Claude Code auth)
+- Set up MCP tools once in AionUI — they sync to all agents automatically
+
 ### Run repo-scorer against the project skeleton:
 ```
 Use the repo-scorer subagent to evaluate this project. We need a score of 50+/70 before starting implementation.
 ```
 
-### Gate: CLAUDE.md, schema, TASKS.md, REVIEW.md, lint config all exist. Repo scores 50+/70 on legibility.
+### Run PREFLIGHT checklist:
+Copy `templates/PREFLIGHT.md.template` into the project and verify every item before proceeding.
+
+### Gate: CLAUDE.md, schema, TASKS.md, REVIEW.md, lint config all exist. PREFLIGHT checklist complete. Repo scores 50+/70 on legibility.
 
 ---
 
@@ -93,13 +114,20 @@ Use the repo-scorer subagent to evaluate this project. We need a score of 50+/70
 **Who:** Claude Code (Opus main + Sonnet subagents) — multiple parallel sessions
 
 ### Parallel Execution Setup:
-Open 2-3 Claude Code terminals:
+Open AionUI and create 3 parallel sessions:
 
-| Terminal | Role | Model |
-|----------|------|-------|
-| Terminal 1 | **Builder** — implements features from TASKS.md | Opus (main) |
-| Terminal 2 | **Test Writer** — generates tests for implemented features | Sonnet (subagent) |
-| Terminal 3 | **Researcher/Explorer** — looks up APIs, patterns, docs needed for next wave | Sonnet (subagent) |
+| Session | Agent | Role | Model |
+|---------|-------|------|-------|
+| Session 1 | Claude Code | **Builder** — implements features from TASKS.md | Opus |
+| Session 2 | Claude Code | **Test Writer** — generates tests for built features | Sonnet |
+| Session 3 | Claude Code / Gemini CLI | **Scout** — researches APIs, patterns for next wave | Sonnet |
+
+AionUI advantages over raw terminals:
+- All 3 sessions visible simultaneously in one window
+- Independent context per session (no cross-contamination)
+- MCP tools configured once, shared across all sessions
+- Session history saved locally in SQLite — resume anytime
+- Visual file preview without switching to Finder/Explorer
 
 Set subagent model for cost efficiency:
 ```bash
@@ -318,6 +346,7 @@ Push → Auto-Deploy → Visual-Verifier → Comet QA → Security Audit → Fix
 
 | Agent | File | Purpose | Phase | Model |
 |-------|------|---------|-------|-------|
+| AionUI | Desktop app | Parallel session orchestration, scheduled automation, unified MCP | All phases | N/A (GUI) |
 | architecture-enforcer | agents/architecture-enforcer.md | Mechanical rule checking | 3 (each wave) | Sonnet |
 | test-writer | agents/test-writer.md | Generate tests in parallel | 3 (parallel) | Sonnet |
 | code-reviewer | agents/code-reviewer.md | Quality review after build | 3 (checkpoint) | Sonnet |
@@ -340,6 +369,24 @@ Push → Auto-Deploy → Visual-Verifier → Comet QA → Security Audit → Fix
 | templates/KNOWLEDGE.md.template | Accumulated learning journal |
 | templates/TASKS.md.template | Wave-based task tracker |
 | templates/REVIEW.md.template | Review-specific rules (separate from build rules) |
+| templates/PREFLIGHT.md.template | Pre-implementation environment & project checklist |
+
+---
+
+## The Toolchain (Level 5)
+
+| Layer | Tool | Purpose |
+|-------|------|---------|
+| Specification | Claude (chat/voice) | Interview, spec generation |
+| Context | CLAUDE.md + KNOWLEDGE.md + REVIEW.md | Persistent memory |
+| Implementation | Claude Code (Opus + Sonnet subagents) | Agentic coding |
+| **Orchestration** | **AionUI** | **Parallel sessions, scheduled automation, unified MCP** |
+| Skills | ~/.claude/skills/ + GitHub repo | Reusable domain knowledge |
+| Deployment | Coolify / Vercel + auto-deploy | One push to production |
+| QA | Comet browser + visual-verifier agent | Independent audit |
+| Brand | Comet comparison + brand-aligner agent | Design token extraction |
+| Version Control | Git with conventional commits | Rollback + review |
+| Delivery | WhatsApp + live demo | Screenshots sell, demos close |
 
 ---
 
@@ -368,6 +415,8 @@ Push → Auto-Deploy → Visual-Verifier → Comet QA → Security Audit → Fix
 | 4. Verify + Deploy | Live URL, zero P0s | visual-verifier, security-auditor + Comet QA | 1-2hrs |
 | 5. Brand | Brand-aligned UI | brand-aligner + Comet comparison | 30-60min |
 | 6. Deliver | Client says yes | repo-scorer, onboarding-writer, maintenance-scanner | 30-60min |
+
+**Orchestration:** All parallel sessions run through AionUI for visual management.
 
 ---
 

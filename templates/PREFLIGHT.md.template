@@ -1,0 +1,36 @@
+# Pre-Flight Checklist
+
+> Run this before Phase 3 (Implementation) begins.
+> Every item must be checked. If any tool is missing, install it before proceeding.
+
+## Environment
+- [ ] Claude Code installed and authenticated (`claude --version`)
+- [ ] AionUI installed and Claude Code detected (`brew install aionui` or download)
+- [ ] Node.js 20+ (`node --version`)
+- [ ] Git configured with your identity (`git config user.name && git config user.email`)
+- [ ] Deployment target accessible (Coolify dashboard loads, or Vercel CLI works)
+
+## Project Files
+- [ ] CLAUDE.md exists at project root and customized for this project
+- [ ] KNOWLEDGE.md exists (empty template is fine)
+- [ ] TASKS.md exists with phased wave plan
+- [ ] REVIEW.md exists with project-specific review rules
+- [ ] .gitignore includes node_modules, .next, .env, build artifacts
+- [ ] .env.example exists with all required variables documented
+
+## Quality Gates
+- [ ] Lint configured (`npm run lint` works)
+- [ ] Build works (`npm run build` passes)
+- [ ] Subagents copied to .claude/agents/ (architecture-enforcer, test-writer, code-reviewer, security-auditor)
+- [ ] Skills symlinked from ~/.claude/skills/ (relevant skills for this project)
+
+## Repo Legibility
+- [ ] Run repo-scorer subagent — score must be 50+/70 before implementation begins
+- [ ] If score < 50, fix the gaps identified in the scorecard before proceeding
+
+## AionUI Sessions
+- [ ] AionUI open with project workspace selected
+- [ ] 3 sessions configured: Builder (Opus), Tester (Sonnet), Scout (Sonnet)
+- [ ] MCP tools configured in AionUI (syncs to all sessions)
+
+**All items checked? Proceed to Phase 3: Implement.**
