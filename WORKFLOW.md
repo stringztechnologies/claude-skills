@@ -1,36 +1,32 @@
-# The Stringz Technologies Development Workflow
+# The Stringz Technologies Development Workflow — v2
 
-> **The Perfected AI-Assisted Development Framework — March 2026**
-> Every project follows these 6 phases. No phase begins until the previous deliverable is verified.
+> **Agent-First Engineering Framework — March 2026**
+> From intent to deployed product in one day. Every time.
+> Level 5: Agent-first. Mechanical enforcement. Parallel execution. Self-verifying agents.
 
 ---
 
 ## How to Use This
 
-1. **Starting a new project?** Open Claude (web, desktop, or Code) and paste:
-   ```
-   I'm starting a new project. Here's the idea: [describe it in 2-3 sentences].
-   
-   Follow the Stringz Workflow from github.com/stringztechnologies/claude-skills/WORKFLOW.md
-   
-   We're in Phase 1: Specify. Interview me to build the spec.
-   ```
+Starting a new project? Open Claude and paste:
 
-2. Claude will interview you, generate the spec, and guide you through all 6 phases.
+```
+I'm starting a new project. Here's the idea: [describe it in 2-3 sentences].
 
-3. At each phase transition, Claude should confirm the deliverable is complete before proceeding.
+Follow the Stringz Workflow v2 from github.com/stringztechnologies/claude-skills/WORKFLOW.md
+
+We're in Phase 1: Specify. Interview me to build the spec. Ask one question at a time.
+```
 
 ---
 
 ## Phase 1: SPECIFY
 **Deliverable:** `SPEC.md`
 **Time:** 30-60 minutes
-**Who:** You + Claude (chat)
+**Who:** You + Claude (chat or voice mode)
 
 ### What happens:
-- Claude interviews you using clarifying questions (not you writing a document)
-- Questions cover: problem, users, modules, success criteria, what's NOT in scope
-- Output is a structured SPEC.md file
+Claude interviews you — you don't write the spec yourself. Voice mode (`/voice`) is 3.7x faster than typing if available.
 
 ### The Interview Prompt:
 ```
@@ -38,233 +34,342 @@ I want to build [brief description]. Interview me in detail — ask me about:
 1. Who has the problem and what they currently use
 2. The 3-6 core modules (capabilities, not features)
 3. User context: device, connectivity, technical literacy, language
-4. What "done" looks like (specific scenarios, not vague goals)
+4. What "done" looks like (specific testable scenarios)
 5. What is explicitly OUT of scope
 6. Tech stack preferences and deployment target
+7. Does the client have an existing website/brand to match?
 
-Ask one question at a time. After the interview, generate a SPEC.md I can review.
+Ask one question at a time. After the interview, generate SPEC.md.
 ```
 
-### SPEC.md must contain:
-- Problem statement (1 paragraph)
-- Module list (3-6 items, one sentence each)
-- User context (device, network, literacy)
-- Success criteria (specific testable scenarios)
-- Out of scope (explicit exclusions)
-- Tech stack + deployment target
-
-### Gate: Do NOT proceed to Phase 2 until you've reviewed and approved the spec.
+### Gate: SPEC.md reviewed and approved before Phase 2.
 
 ---
 
 ## Phase 2: ARCHITECT
-**Deliverable:** `CLAUDE.md` + Database Schema + `KNOWLEDGE.md` + `TASKS.md`
+**Deliverable:** CLAUDE.md + Schema + KNOWLEDGE.md + TASKS.md + REVIEW.md + lint config
 **Time:** 30-60 minutes
 **Who:** You + Claude (chat → Claude Code)
 
 ### What happens:
-- Design the full database schema (tables, relationships, RLS policies)
-- Create CLAUDE.md with project identity, conventions, file structure
-- Create empty KNOWLEDGE.md with section headers
-- Create TASKS.md with phased implementation plan
-- Identify which existing skills from the library apply
-- Identify gaps → plan new skills to create during the build
+1. Design full database schema (tables, relationships, RLS)
+2. Create CLAUDE.md from template (project identity, conventions, what NOT to do)
+3. Create KNOWLEDGE.md from template (empty, ready for Claude to update)
+4. Create TASKS.md from template (phased wave plan)
+5. Create REVIEW.md from template (review-specific rules, separate from build rules)
+6. Configure lint + format gates:
+   ```bash
+   # Install Biome (or ESLint + Prettier)
+   npm install --save-dev @biomejs/biome
+   npx biome init
+   ```
+7. Add pre-commit hook:
+   ```bash
+   # In package.json scripts:
+   "lint": "biome check src/",
+   "format": "biome format --write src/",
+   "precommit": "npm run lint && npm run build"
+   ```
+8. Create `docs/decisions/` directory for ADRs
+9. Select applicable skills from ~/.claude/skills/
+10. Copy subagents to project `.claude/agents/`:
+    - architecture-enforcer.md
+    - test-writer.md
+    - code-reviewer.md
+    - security-auditor.md
 
-### CLAUDE.md template:
-Copy from `templates/CLAUDE.md.template` and customize for the project.
-
-### Skill selection:
+### Run repo-scorer against the project skeleton:
 ```
-Check ~/.claude/skills/ for applicable skills:
-- supabase-nextjs-fullstack → if using Supabase + Next.js
-- multi-currency-ledger → if handling payments in multiple currencies
-- mobile-first-dashboard → if admin dashboard with phone-first design
-- notification-queue → if scheduled reminders or notifications
-- [add your own as your library grows]
+Use the repo-scorer subagent to evaluate this project. We need a score of 50+/70 before starting implementation.
 ```
 
-### Gate: CLAUDE.md, schema, and TASKS.md must exist in the repo before Phase 3.
+### Gate: CLAUDE.md, schema, TASKS.md, REVIEW.md, lint config all exist. Repo scores 50+/70 on legibility.
 
 ---
 
 ## Phase 3: IMPLEMENT
-**Deliverable:** Working code, committed in waves
-**Time:** 2-8 hours depending on scope
-**Who:** Claude Code (with your supervision)
+**Deliverable:** Working code, committed in waves with automated verification
+**Time:** 2-8 hours
+**Who:** Claude Code (Opus main + Sonnet subagents) — multiple parallel sessions
+
+### Parallel Execution Setup:
+Open 2-3 Claude Code terminals:
+
+| Terminal | Role | Model |
+|----------|------|-------|
+| Terminal 1 | **Builder** — implements features from TASKS.md | Opus (main) |
+| Terminal 2 | **Test Writer** — generates tests for implemented features | Sonnet (subagent) |
+| Terminal 3 | **Researcher/Explorer** — looks up APIs, patterns, docs needed for next wave | Sonnet (subagent) |
+
+Set subagent model for cost efficiency:
+```bash
+export CLAUDE_CODE_SUBAGENT_MODEL=claude-sonnet-4-6
+```
 
 ### The Wave-Checkpoint Rhythm:
+
 ```
-Wave 1: Foundation (auth, layout, database setup)
-  → Checkpoint: npm run build passes, login works
-  → Git commit
-  → Claude updates KNOWLEDGE.md
+WAVE:
+  1. Start fresh session. Claude reads CLAUDE.md + KNOWLEDGE.md
+  2. Give it the current phase from TASKS.md
+  3. Let it build (don't micromanage)
 
-Wave 2: Core modules (the 2-3 most important features)
-  → Checkpoint: CRUD works on all entities, data persists
-  → Git commit
-  → Claude updates KNOWLEDGE.md
+CHECKPOINT (after each wave):
+  4. Run lint: npm run lint
+  5. Run build: npm run build
+  6. Run tests: npm run test (if tests exist)
+  7. Run architecture-enforcer subagent
+  8. Git commit with conventional commit message
+  9. Claude updates KNOWLEDGE.md
+  10. Decision-recorder subagent generates ADRs
 
-Wave 3: Secondary modules + integrations
-  → Checkpoint: All features functional, seed data loaded
-  → Git commit
-  → Claude updates KNOWLEDGE.md
-
-Wave 4: Polish (error handling, loading states, empty states)
-  → Checkpoint: npm run build clean, no console errors
-  → Git commit + push
+CONTEXT MANAGEMENT:
+  - /clear between waves (fresh context per phase)
+  - Manual /compact at 50% context
+  - Ctrl+B to background long-running subagents
+  - Never operate above 70% context usage
 ```
 
-### Prompt for each wave:
+### Wave Template Prompt:
 ```
 /sc:implement "[Phase description from TASKS.md]"
 
 Read CLAUDE.md and KNOWLEDGE.md first.
-[Paste the specific tasks for this wave]
+
+[Paste specific tasks for this wave]
+
+After implementation:
+1. Run `npm run lint && npm run build`
+2. Use the architecture-enforcer subagent to check for violations
+3. Fix any violations
+4. Update KNOWLEDGE.md with decisions made
+5. Git commit with message: "feat: [description]"
 ```
 
-### Context management rules:
-- `/clear` between waves (fresh context per phase)
-- Manual `/compact` if context reaches 50%
-- Use subagents for research/exploration to keep main context clean
-- One task per session — never multi-task in a single session
-- Set `CLAUDE_CODE_SUBAGENT_MODEL=sonnet` to save tokens on subagent work
-
-### Gate: All waves committed, `npm run build` passes, app is functional.
+### Gate: All waves committed. Build passes. Lint passes. Architecture-enforcer reports 0 BLOCKING violations.
 
 ---
 
-## Phase 4: DEPLOY + QA
-**Deliverable:** Live URL with zero P0 bugs
+## Phase 4: VERIFY + DEPLOY
+**Deliverable:** Live URL with zero P0 bugs, automated + manual verification
 **Time:** 1-2 hours
-**Who:** Coolify auto-deploy + Comet browser (or separate Claude session)
+**Who:** Visual-verifier subagent + Coolify + Comet browser
 
-### Deploy:
+### Step 1: Automated Verification (NEW — agent verifies own work)
+```
+Use the visual-verifier subagent to check the application before deployment.
+```
+The visual-verifier boots the app, checks every route, reports console errors, and verifies mobile responsiveness. Fix any issues it finds.
+
+### Step 2: Run Tests
 ```bash
-git push  # Coolify auto-deploys from GitHub
+npm run test
+```
+All tests must pass before deployment.
+
+### Step 3: Deploy
+```bash
+git push  # Coolify auto-deploys
 ```
 
-### QA — Use a DIFFERENT AI tool than the one that built it:
-Open Comet (Perplexity), a fresh Claude session, or any browser agent and paste:
+### Step 4: Independent QA (different AI, different context)
+Open Comet browser or a fresh Claude session and paste the QA audit prompt:
 
 ```
-You are a senior QA engineer. Test https://[your-url] systematically:
-
+You are a senior QA engineer. Test https://[your-url] systematically.
 Login with: [email] / [password]
 
-Test in this order:
-1. Auth: Login → use app → sign out → sign back in
-2. Every CRUD path: Create, read, update, delete on each entity
-3. Empty states: What does each page show with zero data?
-4. Error paths: Bad form data, nonexistent URLs, edge cases
-5. Mobile: Test at 393px width — navigation, button overflow, readability
-6. Performance: Page load times, image sizes
+Test: auth flow, every CRUD path, empty states, error paths, mobile at 393px, performance.
 
-Categorize every issue as:
-- P0: Broken, blocks usage
-- P1: Wrong behavior but usable
-- P2: Polish/cosmetic
-- P3: Nice to have
-
-Output a single Claude Code prompt that fixes all P0s and P1s.
+Categorize as P0 (broken), P1 (wrong), P2 (polish), P3 (nice-to-have).
+Output a Claude Code prompt that fixes all P0s and P1s.
 ```
 
-### Fix cycle:
-1. Paste the QA prompt output into Claude Code
-2. Push fixes
-3. Re-run QA audit
-4. Repeat until zero P0s
+### Step 5: Fix Cycle
+1. Paste QA fix prompt into Claude Code
+2. Run architecture-enforcer after fixes
+3. Push → auto-deploy
+4. Re-audit until zero P0s
 
-### Gate: Zero P0 bugs on the live URL.
+### Step 6: Security Audit
+```
+Use the security-auditor subagent to audit the codebase before client delivery.
+```
+
+### Gate: Zero P0 bugs. Security audit clean. Visual-verifier passes.
 
 ---
 
 ## Phase 5: BRAND ALIGNMENT
-**Deliverable:** Pixel-perfect brand match with client's identity
+**Deliverable:** Pixel-perfect brand match
 **Time:** 30-60 minutes
-**Who:** Comet comparison + Claude Code
+**Who:** Comet two-site comparison + brand-aligner subagent + Claude Code
 
-### The Two-Site Comparison:
-Open a browser agent with both sites and paste:
-
+### Step 1: Two-Site Comparison (Comet)
 ```
-You are a senior UI designer. Compare these two sites:
-TAB 1: [client's official website]
-TAB 2: [your portal URL] (login: [credentials])
+You are a senior UI designer. Compare:
+TAB 1: [client's website] — the official brand
+TAB 2: [portal URL] — login: [credentials]
 
-For each inconsistency, give me:
-- What the official site has (exact hex colors, font names, sizes)
-- What the portal has
-- The exact CSS/Tailwind fix
-- Priority (high/medium/low)
-
-End with a single Claude Code prompt to apply all high-priority fixes.
+For each inconsistency: exact hex colors, font names, CSS fix, priority.
+End with a single Claude Code prompt for all high-priority fixes.
 ```
 
-### Apply:
-1. Paste the generated Claude Code prompt
-2. Handle logo separately (download/convert/recolor if needed)
-3. Push
-4. Visual verification on live URL
+### Step 2: Logo Extraction
+Download/extract the client's logo. Convert and recolor if needed (use Pillow/ImageMagick). Place in public/.
 
-### Important: CSS extraction alone is insufficient. Always do a visual comparison after applying changes.
+### Step 3: Apply Brand Changes
+Paste the Comet-generated prompt into Claude Code. Or use the brand-aligner subagent:
+```
+Use the brand-aligner subagent with this comparison report: [paste report]
+```
 
-### Gate: Portal visually matches client's brand identity.
+### Step 4: Visual Verification
+Check the live URL after changes deploy. CSS extraction alone is insufficient — always verify visually.
+
+### Gate: Portal visually matches client's brand.
 
 ---
 
 ## Phase 6: DELIVER
 **Deliverable:** Client says yes
-**Time:** 30 minutes
+**Time:** 30-60 minutes
 **Who:** You (human)
 
-### Before the meeting:
-- [ ] Change default password (never share credentials from chat history)
-- [ ] Take desktop screenshot of the login page
-- [ ] Take mobile screenshot
+### Pre-Meeting Checklist:
+- [ ] Change default password
+- [ ] Run security-auditor one final time
+- [ ] Run repo-scorer — target 60+/70
+- [ ] Run onboarding-writer to generate docs
+- [ ] Take desktop + mobile screenshots
 - [ ] Send WhatsApp: screenshots + link + "when can we walk through this?"
-- [ ] Do NOT send credentials — save for the call
+- [ ] Do NOT send credentials in the message
 
-### The demo (5 minutes, no slides):
-1. Login page — they see their brand
+### The Demo (5 minutes, no slides):
+1. Login page — their brand, their building photo, their logo
 2. Dashboard — real KPIs
-3. The one feature that solves their biggest pain point — full workflow
+3. The ONE feature that solves their biggest pain — full workflow
 4. Pull it up on THEIR phone — hand it to them
-5. Say the price once, confidently. Then stop talking.
+5. Say the price once, confidently. Stop talking.
 
-### Pricing framework:
-- Setup: Based on complexity and client's revenue context
-- Monthly: $200-$300/month for hosting + support + updates
-- Never go below a floor that signals quality
-- The monthly retainer is where the real money is long-term
+### Post-Delivery:
+- [ ] Run decision-recorder to finalize all ADRs
+- [ ] Run maintenance-scanner as baseline
+- [ ] Extract reusable skills from this project → push to claude-skills repo
+- [ ] Update WORKFLOW.md if you discovered a better process
+
+### Gate: Client says yes. Invoice sent.
 
 ---
 
-## After Every Project
+## Parallel Agent Orchestration Guide
 
-### Extract and push skills:
-Any reusable pattern discovered during the build should become a skill:
-```bash
-# Create the skill
-mkdir -p ~/.claude/skills/[skill-name]
-# Write SKILL.md with the pattern
-# Push to the repo
-cd ~/claude-skills && git add -A && git commit -m "skill: [name]" && git push
+### For Each Wave (during Phase 3):
+
+```
+┌─────────────────────────────────────────┐
+│           YOU (Human Director)           │
+│  Specify intent. Review output. Decide. │
+└──────────────┬──────────────────────────┘
+               │
+    ┌──────────┼──────────┐
+    │          │          │
+┌───▼───┐ ┌───▼───┐ ┌───▼───┐
+│Builder│ │Tester │ │Scout  │
+│(Opus) │ │(Sonnet│ │(Sonnet│
+│       │ │       │ │       │
+│Writes │ │Writes │ │Reads  │
+│code   │ │tests  │ │docs,  │
+│for    │ │for    │ │finds  │
+│current│ │current│ │APIs   │
+│wave   │ │wave   │ │for    │
+│       │ │       │ │next   │
+│       │ │       │ │wave   │
+└───┬───┘ └───┬───┘ └───┬───┘
+    │         │         │
+    └────┬────┘         │
+         │              │
+    ┌────▼────┐         │
+    │Enforcer │    ┌────▼────┐
+    │(Sonnet) │    │Recorder │
+    │         │    │(Sonnet) │
+    │Checks   │    │         │
+    │arch     │    │Writes   │
+    │rules    │    │ADRs     │
+    └────┬────┘    └────┬────┘
+         │              │
+         └──────┬───────┘
+                │
+         ┌──────▼──────┐
+         │  Git Commit  │
+         │  + Push      │
+         └─────────────┘
 ```
 
-### Update this workflow:
-If you discovered a better process, update WORKFLOW.md. The workflow itself is a living document.
+### For Deployment (Phase 4):
+
+```
+Push → Auto-Deploy → Visual-Verifier → Comet QA → Security Audit → Fix → Repeat
+```
+
+---
+
+## Agent Inventory
+
+| Agent | File | Purpose | Phase | Model |
+|-------|------|---------|-------|-------|
+| architecture-enforcer | agents/architecture-enforcer.md | Mechanical rule checking | 3 (each wave) | Sonnet |
+| test-writer | agents/test-writer.md | Generate tests in parallel | 3 (parallel) | Sonnet |
+| code-reviewer | agents/code-reviewer.md | Quality review after build | 3 (checkpoint) | Sonnet |
+| security-auditor | agents/security-auditor.md | Security vulnerability scan | 4 (pre-deploy) | Sonnet |
+| visual-verifier | agents/visual-verifier.md | Boot app, check routes/errors | 4 (pre-QA) | Sonnet |
+| brand-aligner | agents/brand-aligner.md | Generate brand fix prompt | 5 | Sonnet |
+| decision-recorder | agents/decision-recorder.md | Auto-generate ADRs | 3 (checkpoint) | Sonnet |
+| repo-scorer | agents/repo-scorer.md | Legibility scorecard (7 metrics) | 2 (setup) + 6 (delivery) | Sonnet |
+| maintenance-scanner | agents/maintenance-scanner.md | Tech debt detection | 6 (post-delivery) + weekly | Sonnet |
+| onboarding-writer | agents/onboarding-writer.md | Generate docs and guides | 6 (delivery) | Sonnet |
+
+---
+
+## Templates
+
+| Template | Purpose |
+|----------|---------|
+| templates/SPEC.md.template | Interview-driven project specification |
+| templates/CLAUDE.md.template | Project identity and conventions |
+| templates/KNOWLEDGE.md.template | Accumulated learning journal |
+| templates/TASKS.md.template | Wave-based task tracker |
+| templates/REVIEW.md.template | Review-specific rules (separate from build rules) |
+
+---
+
+## The 10 Commandments (v2)
+
+1. **Specify before you build.** Interview, don't type. Voice mode if available.
+2. **CLAUDE.md is your harness.** Not optional. Not a suggestion. The foundation everything runs on.
+3. **KNOWLEDGE.md is episodic memory.** Every wave adds learning. Session #10 inherits all lessons.
+4. **Enforce mechanically, not documentationally.** Lint gates. Pre-commit hooks. Architecture-enforcer. If a rule isn't enforced by CI, it will be violated.
+5. **Parallelize ruthlessly.** Builder + Tester + Scout running simultaneously. Opus for complex work, Sonnet for focused subagents.
+6. **Agents verify their own work.** Visual-verifier boots the app. Architecture-enforcer checks rules. Tests confirm behavior. Humans review — they don't discover.
+7. **Builder ≠ Tester ≠ Reviewer.** Three different contexts. Three different blind spots eliminated.
+8. **Build generic, brand later.** One pass. One commit. Maximum visual impact.
+9. **Skills compound. Agents compound. Decisions compound.** Extract patterns into skills. Define agents for repeated work. Record decisions in ADRs. Every project makes the next one faster.
+10. **The product sells itself.** Screenshots first. Demo on their device. Say the price once. Stop talking.
 
 ---
 
 ## Quick Reference
 
-| Phase | Deliverable | Tool | Time |
-|-------|-------------|------|------|
-| 1. Specify | SPEC.md | Claude chat | 30-60min |
-| 2. Architect | CLAUDE.md + schema + KNOWLEDGE.md | Claude chat → Code | 30-60min |
-| 3. Implement | Working code (wave commits) | Claude Code | 2-8hrs |
-| 4. Deploy + QA | Live URL, zero P0s | Coolify + Comet | 1-2hrs |
-| 5. Brand | Brand-aligned UI | Comet + Claude Code | 30-60min |
-| 6. Deliver | Client says yes | You (human) | 30min |
+| Phase | Deliverable | Agents Used | Time |
+|-------|-------------|-------------|------|
+| 1. Specify | SPEC.md | None (human + Claude chat) | 30-60min |
+| 2. Architect | CLAUDE.md + schema + REVIEW.md + lint | repo-scorer | 30-60min |
+| 3. Implement | Working code (wave commits) | architecture-enforcer, test-writer, decision-recorder | 2-8hrs |
+| 4. Verify + Deploy | Live URL, zero P0s | visual-verifier, security-auditor + Comet QA | 1-2hrs |
+| 5. Brand | Brand-aligned UI | brand-aligner + Comet comparison | 30-60min |
+| 6. Deliver | Client says yes | repo-scorer, onboarding-writer, maintenance-scanner | 30-60min |
 
-**Total: One focused day for an MVP. Every time.**
+---
+
+*Stringz Technologies — Agent-First Engineering — March 2026*
+*"You are not a coder. You are a context engineer."*

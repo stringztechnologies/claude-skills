@@ -1,0 +1,66 @@
+# Code Review Rules
+
+> Separate from CLAUDE.md build rules. These are review-specific instructions.
+> Based on the Anthropic Code Review pattern (March 2026): review rules belong in their own file.
+
+## Review Scope
+When reviewing code, check ONLY the following. Do not flag style preferences or suggest refactors outside this list.
+
+## Rules
+
+### Security (P0 — always block)
+- [ ] No secrets, API keys, or tokens in source code
+- [ ] RLS policies on every Supabase table
+- [ ] Auth middleware on all protected routes
+- [ ] Zod validation on every server action input
+- [ ] No `dangerouslySetInnerHTML` without sanitization
+- [ ] No raw SQL — use parameterized Supabase client
+- [ ] File uploads validated (size, type, filename)
+
+### Correctness (P0 — always block)
+- [ ] Server actions handle errors with try/catch
+- [ ] Form validation shows user-friendly messages
+- [ ] Data mutations revalidate the correct paths
+- [ ] Auth signOut uses `{ scope: 'local' }`
+- [ ] No `use client` on page-level components
+
+### Performance (P1 — should fix)
+- [ ] No N+1 queries (batch fetches where possible)
+- [ ] Images optimized (WebP, max 1200px, lazy loading)
+- [ ] No unnecessary client components (default to server)
+- [ ] No blocking waterfall fetches (parallel where possible)
+
+### Mobile (P1 — should fix)
+- [ ] Touch targets ≥ 48px on all interactive elements
+- [ ] Responsive breakpoints on layout components
+- [ ] Bottom navigation on mobile (if applicable)
+- [ ] Forms usable on 393px viewport
+- [ ] No horizontal scroll on mobile
+
+### Patterns (P2 — nice to fix)
+- [ ] Follows CLAUDE.md file structure conventions
+- [ ] Server actions for mutations, not API routes
+- [ ] Consistent error handling pattern
+- [ ] Loading states on async pages (loading.tsx)
+- [ ] Empty states on data display pages
+
+## Priority Definitions
+- **P0:** Must fix before merge. Blocks deployment.
+- **P1:** Should fix before delivery. Can merge with a follow-up ticket.
+- **P2:** Nice to fix. Won't block anything.
+
+## Review Output Format
+```
+## Review: [file or feature name]
+
+### P0 Issues (X found)
+- [file:line] — [issue] → [fix]
+
+### P1 Issues (X found)
+- [file:line] — [issue] → [fix]
+
+### P2 Issues (X found)
+- [file:line] — [issue] → [fix]
+
+### Verdict: APPROVE / REQUEST CHANGES / BLOCK
+```
