@@ -25,13 +25,75 @@
 - **Testing:** [e.g., Vitest + Playwright]
 - **Linting:** [e.g., Biome, ESLint + Prettier]
 
-## Critical Rule
-**If CLAUDE.md does not exist in this project, ask me:**
-> "This project doesn't have a CLAUDE.md. Should I onboard it to the Stringz Workflow, or start fresh?"
+## On Every New Session
 
-- If I say **onboard**: Analyze the codebase, generate CLAUDE.md, KNOWLEDGE.md, TASKS.md, and REVIEW.md from what exists
-- If I say **start fresh**: Begin Phase 1 (Specify) — interview me to build the spec
-- If I say **quick and scrappy**: Create minimal CLAUDE.md + KNOWLEDGE.md only, skip the full 6-phase process
+1. Check if CLAUDE.md exists at project root
+2. If YES → read it and KNOWLEDGE.md silently. Proceed normally. No interview. No preflight.
+3. If NO → do NOT immediately interview. Wait for my first request.
+   - If my request is read-only (explain, analyze, read, search, "what does X do") → answer it directly. No interview needed.
+   - If my request requires building, changing, or creating code → trigger First Contact Interview (one time only).
+
+### First Contact Interview (triggers once, only when building)
+
+Say: "I don't see workflow files for this project. Before I start building, let me ask a few quick questions so I can work effectively. This only happens once."
+
+**Q1:** "Is this an existing project to onboard, or are you starting something new?"
+  → Existing: analyze codebase first, then continue to Q2
+  → New: continue to Q2
+
+**Q2:** "What type of project is this?"
+  - Full-stack web app (Next.js, React, Vue, etc.)
+  - Infrastructure / IaC (Terraform, Azure, AWS CDK, Pulumi)
+  - Backend API / microservice (Node, Python, Go, Rust)
+  - Mobile app (React Native, Swift, Flutter, Kotlin)
+  - Data pipeline / ML (Python, notebooks, ETL)
+  - CLI tool / library
+  - Other (describe)
+
+**Q3:** "What's the tech stack?" (or auto-detect from package.json, requirements.txt, go.mod, Cargo.toml, main.tf, etc. if existing project)
+
+**Q4:** "Is this a client delivery or a personal/experimental project?"
+  → Client: full 6-phase workflow (Specify → Deliver)
+  → Personal/scrappy: lighter flow — just CLAUDE.md + KNOWLEDGE.md, skip brand and delivery phases
+
+### After the interview, show the Skill Coverage Map:
+
+"Here's what I already have skills for, and what's missing for your project type:"
+
+| Domain | Skill Exists? | Skill Name |
+|--------|--------------|------------|
+| [YOUR-DOMAIN-1] | ✅ | [YOUR-SKILL-NAME] |
+| [YOUR-DOMAIN-2] | ✅ | [YOUR-SKILL-NAME] |
+| [YOUR-DOMAIN-3] | ❌ | — (will create if needed) |
+
+<!-- Add rows for each skill in your ~/.claude/skills/ directory -->
+<!-- Mark ✅ for skills that exist, ❌ for domains you haven't built skills for yet -->
+
+If a needed skill is missing: "No skill exists for [domain] yet. I'll create one as we build — it becomes reusable for your next [domain] project."
+
+### Then proceed based on project type:
+
+**New + Client:** Flow directly into Phase 1 Specify. Interview the user to build SPEC.md using the interview prompt from WORKFLOW.md. After SPEC.md is approved, proceed to Phase 2: generate CLAUDE.md, KNOWLEDGE.md, REVIEW.md, TASKS.md, PREFLIGHT.md.
+
+**New + Personal/Scrappy:** Ask only:
+  - "Describe what you want to build in 2-3 sentences."
+  - "Who is it for?"
+  - "What's the one thing it must do?"
+  Then generate minimal CLAUDE.md + KNOWLEDGE.md and start building. If it becomes serious later, run the full onboarding.
+
+**Existing project (onboard):** Analyze the codebase → generate CLAUDE.md, KNOWLEDGE.md, REVIEW.md, TASKS.md → run repo-scorer → report the score and gaps.
+
+**Once CLAUDE.md is generated, First Contact NEVER triggers again for this project.**
+
+## PREFLIGHT Checklist (separate from First Contact)
+
+PREFLIGHT is NOT automatic. It is a manual gate run before major implementation work.
+Trigger it when:
+- I say "run preflight" or "preflight check"
+- Starting a multi-wave implementation phase (Phase 3)
+- Before a client delivery (Phase 6)
+
+Do NOT run PREFLIGHT on every session or for small tasks.
 
 ## Before Any PR or Push
 Always run this verification sequence:

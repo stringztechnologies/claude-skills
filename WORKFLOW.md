@@ -44,6 +44,8 @@ Ask one question at a time. After the interview, generate SPEC.md.
 
 ### Gate: SPEC.md reviewed and approved before Phase 2.
 
+> **Note:** If this is a new project and you haven't run First Contact yet, it triggers automatically when you first ask Claude Code to build something. First Contact flows into Phase 1 (Specify) and then Phase 2 (Architect) seamlessly. First Contact is the one-time entry point. PREFLIGHT is the recurring quality gate before Phase 3.
+
 ---
 
 ## Phase 2: ARCHITECT
