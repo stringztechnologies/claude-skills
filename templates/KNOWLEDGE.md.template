@@ -1,0 +1,23 @@
+# Knowledge Base
+
+> This file is updated by Claude Code after every implementation task.
+> It carries accumulated learning across sessions.
+> DO NOT DELETE — this is the project's memory.
+
+## Decisions Made
+<!-- Record architectural decisions and their reasoning -->
+
+## Bugs Fixed
+<!-- Record bugs discovered and their solutions so they're never repeated -->
+
+## Patterns Established
+<!-- Record patterns that work well in this project -->
+
+## Things That Don't Work
+<!-- Record approaches that were tried and failed — prevent re-discovery -->
+
+## Schema Notes
+<!-- Record any schema decisions, constraint changes, or migration notes -->
+
+## Environment Notes
+<!-- Record deployment quirks, environment variable requirements, etc. -->

@@ -1,0 +1,59 @@
+# Implementation Tasks
+
+> Check off tasks as completed. Each wave = one Claude Code session.
+
+## Wave 1: Foundation
+- [ ] Project scaffold (Next.js + Tailwind + shadcn)
+- [ ] Supabase project setup + schema migration
+- [ ] Auth flow (login page, middleware, session handling)
+- [ ] Dashboard layout shell (sidebar/bottom nav, responsive)
+- [ ] CLAUDE.md finalized with actual file paths
+- **Checkpoint:** `npm run build` passes, login works, layout renders
+
+## Wave 2: Core Modules
+- [ ] [Module 1 — the most important one]
+- [ ] [Module 2]
+- [ ] [Module 3]
+- **Checkpoint:** CRUD works on all entities, data persists, navigation works
+
+## Wave 3: Secondary Modules
+- [ ] [Module 4]
+- [ ] [Module 5]
+- [ ] [Module 6]
+- **Checkpoint:** All features functional, relationships work between modules
+
+## Wave 4: Data + Polish
+- [ ] Seed data (realistic, demonstrates all features)
+- [ ] Empty states on all pages
+- [ ] Loading states
+- [ ] Error handling (form validation, 404 page)
+- [ ] CSV export (if applicable)
+- [ ] Receipt/PDF generation (if applicable)
+- **Checkpoint:** `npm run build` clean, no console errors
+
+## Wave 5: Deploy
+- [ ] Dockerfile (multi-stage, standalone output)
+- [ ] Push to GitHub → Coolify auto-deploy
+- [ ] Verify live URL works
+- [ ] SSL/domain configured
+- **Checkpoint:** Live URL accessible, login works on deployed version
+
+## QA Rounds
+- [ ] QA Round 1 (Comet audit) → Fix P0s
+- [ ] QA Round 2 → Fix P1s
+- [ ] QA Round 3 → Verify zero P0/P1
+
+## Brand Alignment
+- [ ] Two-site comparison (Comet)
+- [ ] Color system swap
+- [ ] Logo extraction + placement
+- [ ] Typography alignment
+- [ ] Surface warmth
+- [ ] Visual verification
+
+## Delivery
+- [ ] Change default password
+- [ ] Screenshots (desktop + mobile)
+- [ ] Send client message with link
+- [ ] Demo walkthrough
+- [ ] Price conversation

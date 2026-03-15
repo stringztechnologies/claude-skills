@@ -1,0 +1,49 @@
+# Project Specification
+
+> Generated through the Stringz Interview Process.
+> This is the contract between you and the AI. The AI builds exactly this. No more, no less.
+
+## Problem Statement
+<!-- One paragraph. Who has the problem? What do they currently use? What pain does it cause? -->
+
+## Modules
+<!-- 3-6 core modules. One sentence each. Capabilities, not features. -->
+
+1. **[Module Name]** — [What it does in one sentence]
+2. **[Module Name]** — [What it does in one sentence]
+3. **[Module Name]** — [What it does in one sentence]
+
+## User Context
+- **Primary user:** [Role — e.g., building manager, business owner, admin]
+- **Device:** [Phone-first? Desktop? Both?]
+- **Connectivity:** [Fast/reliable? Spotty/mobile? Offline needed?]
+- **Technical literacy:** [High/medium/low]
+- **Language:** [English? Need localization?]
+
+## Success Criteria
+<!-- Specific testable scenarios. Not vague goals. -->
+
+1. [User] can [do specific action] in [number] of steps
+2. [User] opens the app and immediately sees [specific information]
+3. [Specific workflow] works end-to-end without errors
+
+## Out of Scope (MVP)
+<!-- Explicit exclusions. Prevents gold-plating. -->
+
+- NOT building: [feature]
+- NOT building: [feature]
+- NOT integrating: [service]
+- NOT supporting: [use case]
+
+## Tech Stack
+- **Framework:** [e.g., Next.js 15 App Router]
+- **Database:** [e.g., Supabase]
+- **Styling:** [e.g., Tailwind + shadcn/ui]
+- **Deployment:** [e.g., Coolify at IP]
+- **Payment integration:** [e.g., Chapa, Stripe, or "manual for MVP"]
+
+## Future Phases (not now, but designed for)
+<!-- Things we won't build now but should architect to support later -->
+
+- Phase 2: [feature]
+- Phase 3: [feature]

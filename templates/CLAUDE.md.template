@@ -1,0 +1,66 @@
+# [PROJECT NAME]
+
+> Built by Stringz Technologies using the Perfected Workflow (v1 — March 2026)
+
+## Project Identity
+- **What:** [One sentence description]
+- **Client:** [Client name or "internal"]
+- **Domain:** [e.g., property management, fintech, CRM]
+- **Live URL:** [deployment URL]
+
+## Tech Stack
+- **Framework:** Next.js 15 (App Router)
+- **Database:** Supabase (Postgres + Auth + Storage)
+- **Styling:** Tailwind CSS + shadcn/ui
+- **Deployment:** Coolify at [server IP]
+- **Repo:** [GitHub URL]
+
+## Architecture Rules
+- Server Components by default. Only interactive elements (forms, modals, filters) become Client Components.
+- No state management library. React Server Components + URL search params + form actions.
+- Supabase Auth with middleware for session checking.
+- All images compressed client-side before upload (max 1200px, WebP).
+- RLS policies on every table from day one.
+
+## File Structure
+```
+src/
+├── app/
+│   ├── (auth)/          ← login, public pages
+│   ├── (dashboard)/     ← protected app pages
+│   └── api/             ← webhooks, external APIs
+├── components/
+│   ├── ui/              ← shadcn/ui base components
+│   └── [module]/        ← module-specific components
+├── lib/
+│   ├── supabase/        ← client, server, admin clients
+│   ├── types.ts         ← TypeScript types from schema
+│   └── utils.ts         ← shared utilities
+└── hooks/               ← custom React hooks
+```
+
+## Conventions
+- Use Zod for all form validation
+- Server actions for mutations (not API routes)
+- Toast notifications for success/error feedback
+- Auto-refresh data after mutations
+- signOut must use `{ scope: 'local' }` to prevent global session revocation
+
+## What NOT to Do
+- Do NOT add state management libraries (Redux, Zustand, etc.)
+- Do NOT create API routes for CRUD — use server actions
+- Do NOT use `use client` on page components — only on interactive children
+- Do NOT store secrets in code — use environment variables
+- Do NOT skip RLS policies — even for admin-only MVP
+
+## Active Skills
+[List the skills from ~/.claude/skills/ that apply to this project]
+- supabase-nextjs-fullstack
+- [add relevant skills]
+
+## Commands
+```bash
+npm run dev      # Local development
+npm run build    # Production build (must pass before pushing)
+git push         # Triggers auto-deploy on Coolify
+```

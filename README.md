@@ -1,65 +1,93 @@
-# Claude Code Skills
+# Stringz Technologies — Claude Skills & Workflow Framework
 
-Reusable Claude Code skills for full-stack development, finance, property management, notifications, and mobile dashboards.
+> **The Perfected AI-Assisted Development Framework — March 2026**
+> From intent to deployed product in one day. Every time.
 
-## Skills
+## Quick Start
 
-### 1. supabase-nextjs-fullstack
-Production patterns for Next.js App Router + Supabase full-stack apps — auth, RLS, Server Actions, Storage uploads, Zod validation.
+Starting a new project? Open Claude and paste:
 
-### 2. multi-currency-ledger
-Schema patterns and business logic for multi-currency financial transactions with partial payments, exchange rates, and flexible payment methods.
+```
+I'm starting a new project. Here's the idea: [2-3 sentences].
 
-### 3. property-management-core
-Data models and UI patterns for residential property management — buildings, units, tenants, leases, inventory checks with photo evidence, dashboard KPIs.
+Follow the Stringz Workflow: 6 phases (Specify → Architect → Implement → Deploy+QA → Brand → Deliver).
 
-### 4. notification-queue
-Scheduled, multi-channel notification system with templated messages, escalation tiers, manual-first workflows, and n8n automation.
+We're in Phase 1: Specify. Interview me to build the spec. Ask one question at a time.
+```
 
-### 5. mobile-first-dashboard
-Component architecture for phone-first admin dashboards — bottom navigation, sheet modals, KPI cards, action queues, thumb-zone-optimized design.
+## The Workflow
 
-### 6. fullstack-agent-squad
-Agent orchestration patterns — maps SuperClaude personas to domain skills, defines feature decomposition (Epic→Story→Task), parallel Wave→Checkpoint execution, subagent context budgets, and persistent KNOWLEDGE.md session memory.
+**[Read WORKFLOW.md](./WORKFLOW.md)** — The complete 6-phase framework.
 
-### 7. web-app-qa-audit
-Comprehensive QA audit for live web applications — 8-phase systematic testing of every route, link, button, form, and workflow. Produces a prioritized bug report (P0/P1/P2/P3). Works with any web app via Playwright MCP, curl/fetch, or guided manual testing.
+| Phase | Deliverable | Time |
+|-------|-------------|------|
+| 1. Specify | SPEC.md | 30-60min |
+| 2. Architect | CLAUDE.md + schema + KNOWLEDGE.md | 30-60min |
+| 3. Implement | Working code (wave commits) | 2-8hrs |
+| 4. Deploy + QA | Live URL, zero P0s | 1-2hrs |
+| 5. Brand | Brand-aligned UI | 30-60min |
+| 6. Deliver | Client says yes | 30min |
+
+## Templates
+
+Copy these into every new project:
+
+- `templates/SPEC.md.template` — Interview-driven specification
+- `templates/CLAUDE.md.template` — Project identity + conventions
+- `templates/KNOWLEDGE.md.template` — Accumulated learning journal
+- `templates/TASKS.md.template` — Phased task tracker
+
+## Skills Library
+
+Reusable domain knowledge that compounds across projects:
+
+| Skill | Domain | Use When |
+|-------|--------|----------|
+| `supabase-nextjs-fullstack` | Full-stack | Next.js + Supabase project |
+| `multi-currency-ledger` | Finance | Payments in multiple currencies |
+| `property-management-core` | Real Estate | Buildings, units, tenants, leases |
+| `notification-queue` | Messaging | Scheduled reminders, multi-channel |
+| `mobile-first-dashboard` | UI/UX | Phone-first admin dashboard |
+| `fullstack-agent-squad` | Dev Process | Agent orchestration patterns |
+| `web-app-qa-audit` | QA | Systematic testing of deployed apps |
+| `cloudflare-site-crawler` | Design | Extract design tokens from websites |
+
+## Subagents
+
+Install in any project by copying to `.claude/agents/`:
+
+- `agents/code-reviewer.md` — Post-implementation quality review
+- `agents/security-auditor.md` — Pre-deployment security audit
+- `agents/brand-aligner.md` — Generates brand alignment prompts
 
 ## Installation
 
-### Claude Code (CLI)
-
-Copy skills to your global skills directory:
-
+### Skills (global — available in all projects):
 ```bash
-mkdir -p ~/.claude/skills
-cp -r supabase-nextjs-fullstack ~/.claude/skills/
-cp -r multi-currency-ledger ~/.claude/skills/
-cp -r property-management-core ~/.claude/skills/
-cp -r notification-queue ~/.claude/skills/
-cp -r mobile-first-dashboard ~/.claude/skills/
+# Clone the repo
+git clone https://github.com/stringztechnologies/claude-skills.git
+
+# Symlink skills to global Claude Code location
+ln -s $(pwd)/claude-skills/skills/* ~/.claude/skills/
+
+# Symlink agents
+ln -s $(pwd)/claude-skills/agents/* ~/.claude/agents/
 ```
 
-Or install all at once:
-
+### Per-project setup:
 ```bash
-for skill in supabase-nextjs-fullstack multi-currency-ledger property-management-core notification-queue mobile-first-dashboard fullstack-agent-squad web-app-qa-audit; do
-  cp -r "$skill" ~/.claude/skills/
-done
+# Copy templates into a new project
+cp claude-skills/templates/CLAUDE.md.template ./CLAUDE.md
+cp claude-skills/templates/KNOWLEDGE.md.template ./KNOWLEDGE.md
+cp claude-skills/templates/TASKS.md.template ./TASKS.md
 ```
 
-### Claude.ai (Web)
+## The Philosophy
 
-Upload the `SKILL.md` file from any skill directory as an attachment in your conversation.
+> You are not a coder. You are a context engineer.
+> Your job is to design the environment, constraints, and feedback loops
+> that make AI agents produce reliable, production-grade output.
 
-## Usage
+---
 
-Each skill triggers automatically when Claude detects relevant context in your conversation. You can also reference them directly:
-
-- "Use the supabase-nextjs-fullstack skill to set up auth"
-- "Follow the multi-currency-ledger patterns for billing"
-- "Apply mobile-first-dashboard patterns to this admin panel"
-
-## License
-
-MIT
+**Stringz Technologies** — Addis Ababa & Beyond — 2026
