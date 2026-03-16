@@ -19,51 +19,91 @@ This guide says "Comet" throughout, but **the prompts work in any AI tool that c
 
 ---
 
-## Why 8 Separate Sessions, Not 1 Giant Prompt
+## Why 8 Phases in 3 Batches, Not 1 Giant Prompt
 
 We learned this the hard way during the Arman Apartments build. When you give a browser agent (Comet) one massive prompt covering all 8 testing phases, it does one of two things:
 
 1. **Skims.** It marks phases as "tested" but only spent 10 seconds on each. The output looks thorough but isn't.
 2. **Drops phases.** It tests auth and CRUD thoroughly, then runs out of context and skips security, accessibility, and performance entirely.
 
-The fix: **run each phase as a separate Comet session.** Each session is short enough that Comet tests it thoroughly. You paste each result into a Claude session (Desktop or Code) that accumulates the full picture.
+The fix: **run 8 phases across 3 batches of 2-3 parallel Comet tabs.** Each tab handles one phase, and tabs within a batch run simultaneously. You paste each batch's results into a Claude accumulator session.
+
+| Batch | Phases | Tabs | Why together |
+|-------|--------|------|-------------|
+| **Batch 1** | 1 (Auth), 2 (CRUD), 3 (Edge Cases) | 3 tabs | Core functionality — must pass before anything else matters |
+| **Batch 2** | 4 (Security), 5 (Mobile), 6 (Performance) | 3 tabs | Infrastructure quality — independent of each other |
+| **Batch 3** | 7 (Accessibility), 8 (Cross-Browser) | 2 tabs | Polish — can run last since they rarely produce P0s |
 
 This mirrors how QA works at real companies. Nobody runs one test suite that covers everything. They have separate test plans for functional testing, security testing, performance testing, and accessibility testing — each with its own methodology and specialists.
 
+### Time Comparison
+
+| Strategy | Time | Risk |
+|----------|------|------|
+| Sequential (1 tab at a time) | ~90 min | Thorough but slow |
+| **Batched parallel (3 batches)** | **30-40 min** | **Best balance — thorough and fast** |
+| All 8 tabs at once | ~20 min | Chaotic — results pile up faster than you can relay them, easy to lose track |
+
 ---
 
-## The Handoff Flow
+## The Batched Handoff Flow
 
-Here's how the three tools work together:
+Here's how the three tools work together across 3 batches:
 
 ```
-Comet (browser agent)          You (relay)          Claude (accumulator + fixer)
-        │                          │                          │
-        │  ◄── Paste Phase 1 ───── │                          │
-        │      prompt              │                          │
-        ├── Tests auth ──────────► │                          │
-        │                          │ ── Paste result ───────► │
-        │                          │                          │  Tracks Phase 1
-        │                          │                          │
-        │  ◄── Paste Phase 2 ───── │                          │
-        │      prompt              │                          │
-        ├── Tests CRUD ──────────► │                          │
-        │                          │ ── Paste result ───────► │
-        │                          │                          │  Tracks Phase 1+2
-        │                          │                          │
-        │     ... repeat x8 ...    │                          │
-        │                          │                          │
-        │                          │ ── "Build the report" ─► │
-        │                          │                          │  Consolidates all 8
-        │                          │                          │  Generates fix prompt
-        │                          │                          │
-        │                          │  ◄── Fix prompt ──────── │
-        │                          │                          │
-        │                     Paste into Claude Code          │
-        │                     Push → Re-audit                 │
+BATCH 1 — Core Functionality
+┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+│ Tab 1: Auth  │ │ Tab 2: CRUD  │ │ Tab 3: Edge  │    ← 3 Comet tabs in parallel
+│ (Phase 1)    │ │ (Phase 2)    │ │ (Phase 3)    │
+└──────┬───────┘ └──────┬───────┘ └──────┬───────┘
+       │                │                │
+       └────────────────┼────────────────┘
+                        ▼
+              Paste all 3 results into Claude accumulator
+              "Here's Batch 1 — Phases 1, 2, 3: [paste]"
+
+BATCH 2 — Infrastructure Quality
+┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+│ Tab 4: Sec   │ │ Tab 5: Mobile│ │ Tab 6: Perf  │    ← 3 more tabs
+│ (Phase 4)    │ │ (Phase 5)    │ │ (Phase 6)    │
+└──────┬───────┘ └──────┬───────┘ └──────┬───────┘
+       │                │                │
+       └────────────────┼────────────────┘
+                        ▼
+              Paste all 3 results into Claude accumulator
+              "Here's Batch 2 — Phases 4, 5, 6: [paste]"
+
+BATCH 3 — Polish
+┌──────────────┐ ┌──────────────┐
+│ Tab 7: A11y  │ │ Tab 8: X-Brw │                     ← 2 tabs
+│ (Phase 7)    │ │ (Phase 8)    │
+└──────┬───────┘ └──────┬───────┘
+       │                │
+       └────────┬───────┘
+                ▼
+              Paste both results into Claude accumulator
+              "Here's Batch 3 — Phases 7, 8: [paste]"
+              "Build the consolidated report."
+
+                        ▼
+              Claude generates fix prompt → paste into Claude Code → push
 ```
 
 **You** are the bridge between Comet (tester) and Claude (fixer). This is intentional — no single AI should both build and test the same code.
+
+---
+
+## AionUI Setup During QA
+
+If you're using AionUI, set up 3 sessions for the QA phase:
+
+| Session | Role | What it does |
+|---------|------|-------------|
+| Session 1 | **Fixer** (Claude Code) | Receives the consolidated fix prompt after each round. Reads CLAUDE.md + KNOWLEDGE.md. Fixes P0s and P1s. |
+| Session 2 | **Accumulator** (Claude Desktop/Web) | Collects Comet results batch by batch. Builds the consolidated report. Generates the fix prompt. |
+| Session 3 | **Builder** (Claude Code) | Continues next-wave implementation while QA runs on the current wave. Don't let QA block building. |
+
+Session 3 is the key insight: **QA and building run in parallel.** While Comet audits Wave 2, Session 3 builds Wave 3. When the fix prompt comes back, Session 1 applies it without interrupting the builder.
 
 ---
 
@@ -89,7 +129,7 @@ This gives Claude the context it needs. Now start pasting Comet prompts one at a
 
 ## The 8 Phases
 
-### Phase 1: Authentication & Session Management
+### Phase 1: Authentication & Session Management — Batch 1 of 3
 **Time:** 5-10 minutes
 **What it tests:** Login, logout, session persistence, protection of routes
 
@@ -118,7 +158,7 @@ For each issue found: describe what happened, what should have happened, and rat
 
 ---
 
-### Phase 2: Functional Testing (CRUD Per Module)
+### Phase 2: Functional Testing (CRUD Per Module) — Batch 1 of 3
 **Time:** 15-20 minutes (the longest phase)
 **What it tests:** Create, read, update, delete on every entity; form validation
 
@@ -153,7 +193,7 @@ Test each module separately. For each issue: module name, action (create/read/up
 
 ---
 
-### Phase 3: Data Integrity & Edge Cases
+### Phase 3: Data Integrity & Edge Cases — Batch 1 of 3
 **Time:** 10-15 minutes
 **What it tests:** Data persistence, special characters, empty states, boundary conditions
 
@@ -179,7 +219,7 @@ For each issue: scenario number, what happened, severity.
 
 ---
 
-### Phase 4: Security (OWASP Top 10 Essentials)
+### Phase 4: Security (OWASP Top 10 Essentials) — Batch 2 of 3
 **Time:** 10-15 minutes
 **What it tests:** Access control, injection, secrets exposure, headers
 
@@ -223,7 +263,7 @@ For each finding: what you tested, what you found, severity (P0 for actual vulne
 
 ---
 
-### Phase 5: Mobile Responsiveness
+### Phase 5: Mobile Responsiveness — Batch 2 of 3
 **Time:** 10-15 minutes
 **What it tests:** Layout, navigation, touch targets, overflow at phone and tablet sizes
 
@@ -259,7 +299,7 @@ For each issue: device/width, page, what's broken, screenshot description if pos
 
 ---
 
-### Phase 6: Performance & UX Polish
+### Phase 6: Performance & UX Polish — Batch 2 of 3
 **Time:** 5-10 minutes
 **What it tests:** Load times, bundle size, loading states, feedback, error handling
 
@@ -289,7 +329,7 @@ For each issue: what you tested, the measurement or finding, severity.
 
 ---
 
-### Phase 7: Accessibility (WCAG 2.1 AA Essentials)
+### Phase 7: Accessibility (WCAG 2.1 AA Essentials) — Batch 3 of 3
 **Time:** 5-10 minutes
 **What it tests:** Keyboard navigation, contrast, labels, focus indicators
 
@@ -322,7 +362,7 @@ For each issue: what you tested, what you found, WCAG criterion if known, severi
 
 ---
 
-### Phase 8: Cross-Browser
+### Phase 8: Cross-Browser — Batch 3 of 3
 **Time:** 5 minutes
 **What it tests:** Rendering consistency between Chrome and Safari (or Firefox)
 
@@ -350,12 +390,12 @@ For each difference: page, what's different, which browser is correct, severity.
 
 ---
 
-## After All 8 Phases: Get the Consolidated Report
+## After All 3 Batches: Get the Consolidated Report
 
-Once you've pasted all 8 phase results into Claude, say:
+Once you've pasted all 3 batches (8 phases) into Claude, say:
 
 ```
-You now have all 8 QA phases. Build me:
+You now have all 3 batches (8 QA phases). Build me:
 
 1. A consolidated issue table:
    | # | Phase | Page | Issue | Device | Severity |
@@ -374,14 +414,14 @@ You now have all 8 QA phases. Build me:
 ## The Fix Cycle
 
 ```
-Round 1: Comet audit (8 phases) → Claude report → fix P0s → push
-Round 2: Re-run ONLY the phases that had P0s → fix remaining → push
-Round 3: Quick smoke test across all phases → confirm zero P0s
+Round 1: 3 batches (8 phases) → Claude report → fix P0s in Session 1 → push
+Round 2: Re-run ONLY the batches that had P0s → fix remaining → push
+Round 3: Quick smoke test (1 tab per batch) → confirm zero P0s
 ```
 
-You don't re-run all 8 phases every round. After Round 1, you only re-test the phases where issues were found.
+You don't re-run all 3 batches every round. After Round 1, you only re-test the batches where issues were found. If P0s were only in Batch 1 (auth/CRUD/edge cases), skip Batches 2 and 3 in Round 2.
 
-*From the Arman build: Round 1 found P0s in auth and mobile. Round 2 found P1s in responsive breakpoints. Round 3: P2s only. Round 4: zero P0s, zero P1s. Ready for delivery.*
+*From the Arman build: Round 1 found P0s in auth and mobile (Batches 1+2). Round 2 found P1s in responsive breakpoints (Batch 2 only). Round 3: P2s only. Round 4: zero P0s, zero P1s. Ready for delivery.*
 
 ---
 
