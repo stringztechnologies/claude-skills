@@ -1,6 +1,6 @@
 # Stringz Technologies — Claude Skills & Workflow Framework
 
-**Framework Version: 2.1**
+**Framework Version: 2.2**
 
 > **Level 5: Agent-First Engineering — March 2026**
 > From intent to deployed product in one day. Every time.

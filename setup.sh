@@ -131,7 +131,41 @@ done
 echo "  ✅ $AGENTS_LINKED agents linked ($AGENTS_SKIPPED already existed)"
 echo ""
 
-# ─── 5. Summary ──────────────────────────────────────────
+# ─── 5. Check for hooks blocking .md files ───────────────
+
+echo "Checking for hooks that block .md file creation..."
+
+HOOKS_FOUND=0
+PLUGINS_DIR="$HOME/.claude/plugins"
+
+if [ -d "$PLUGINS_DIR" ]; then
+  while IFS= read -r hooks_file; do
+    if grep -q '\.md' "$hooks_file" 2>/dev/null; then
+      HOOKS_FOUND=$((HOOKS_FOUND + 1))
+      plugin_name=$(echo "$hooks_file" | sed "s|$PLUGINS_DIR/||" | cut -d/ -f1-2)
+      echo ""
+      echo "  ⚠️  Found .md blocking hook in: $plugin_name"
+      echo ""
+      echo "  Stringz Workflow needs to create these .md files:"
+      echo "    KNOWLEDGE.md, REVIEW.md, TASKS.md, PREFLIGHT.md, SPEC.md"
+      echo ""
+      echo "  If the hook's allowlist regex looks like this:"
+      echo "    !/(README|CLAUDE|AGENTS|CONTRIBUTING)\\.md\$/.test(p)"
+      echo ""
+      echo "  Update it to:"
+      echo "    !/(README|CLAUDE|AGENTS|CONTRIBUTING|KNOWLEDGE|REVIEW|TASKS|PREFLIGHT|SPEC)\\.md\$/.test(p)"
+      echo ""
+      echo "  File to edit: $hooks_file"
+    fi
+  done < <(find "$PLUGINS_DIR" -name "hooks.json" -type f 2>/dev/null)
+fi
+
+if [ "$HOOKS_FOUND" -eq 0 ]; then
+  echo "  ✅ No blocking hooks detected"
+fi
+echo ""
+
+# ─── 6. Summary ──────────────────────────────────────────
 
 TOTAL_SKILLS=$(ls -d "$REPO_DIR"/skills/*/ 2>/dev/null | wc -l | tr -d ' ')
 TOTAL_AGENTS=$(ls "$REPO_DIR"/agents/*.md 2>/dev/null | wc -l | tr -d ' ')

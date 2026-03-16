@@ -1,4 +1,4 @@
-<!-- version: 2.1 -->
+<!-- version: 2.2 -->
 # The Stringz Technologies Development Workflow — v2
 
 > **Agent-First Engineering Framework — March 2026**

@@ -49,6 +49,27 @@ After setup, install AionUI for parallel agent sessions:
 brew install aionui  # macOS
 ```
 
+### Hook Compatibility
+
+Some Claude Code plugins (e.g., `everything-claude-code`) include `PreToolUse` hooks that block `.md` or `.txt` file creation to prevent doc sprawl. This conflicts with the Stringz Workflow, which needs to create `KNOWLEDGE.md`, `REVIEW.md`, `TASKS.md`, `PREFLIGHT.md`, and `SPEC.md` in every project.
+
+**How to detect it:** `setup.sh` automatically scans `~/.claude/plugins/` for `hooks.json` files containing `.md` patterns and warns you. You can also check manually:
+```bash
+grep -r '\.md' ~/.claude/plugins/*/hooks.json
+```
+
+**How to fix it:** The hook typically has an allowlist regex like:
+```javascript
+!/(README|CLAUDE|AGENTS|CONTRIBUTING)\.md$/.test(p)
+```
+
+Add the Stringz Workflow files to the allowlist:
+```javascript
+!/(README|CLAUDE|AGENTS|CONTRIBUTING|KNOWLEDGE|REVIEW|TASKS|PREFLIGHT|SPEC)\.md$/.test(p)
+```
+
+> *Discovered during the music-promo-engine onboarding — Claude kept failing to create KNOWLEDGE.md and REVIEW.md because the everything-claude-code hook was silently blocking .md writes.*
+
 ---
 
 ## Step 2: Open Any Project

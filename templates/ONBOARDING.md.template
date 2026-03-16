@@ -78,3 +78,51 @@ Use the web-app-qa-audit skill to audit [LIVE_URL].
 Login: [EMAIL] / [PASSWORD]
 ```
 This gives you a P0-P3 bug list to add to TASKS.md.
+
+---
+
+## Troubleshooting
+
+### Hook blocking .md file creation
+
+**Symptom:** Claude fails to create `KNOWLEDGE.md`, `REVIEW.md`, `TASKS.md`, `PREFLIGHT.md`, or `SPEC.md`. The Write tool is silently denied or returns a permission error.
+
+**Cause:** A Claude Code plugin (commonly `everything-claude-code`) has a `PreToolUse` hook that blocks `.md` file creation unless the filename is in its allowlist.
+
+**How to detect:**
+```bash
+grep -r '\.md' ~/.claude/plugins/*/hooks.json
+```
+
+**How to fix:** Find the allowlist regex in the hook's `hooks.json` and add the Stringz files:
+```
+# Before:
+!/(README|CLAUDE|AGENTS|CONTRIBUTING)\.md$/.test(p)
+
+# After:
+!/(README|CLAUDE|AGENTS|CONTRIBUTING|KNOWLEDGE|REVIEW|TASKS|PREFLIGHT|SPEC)\.md$/.test(p)
+```
+
+**Bypass (temporary):** If you can't edit the hook immediately, use Bash heredoc to create the files:
+```bash
+cat > KNOWLEDGE.md << 'EOF'
+# Knowledge Base
+[paste template content here]
+EOF
+```
+This works because Bash tool calls bypass Write tool hooks.
+
+### CLAUDE.md exists but isn't Stringz format
+
+**Symptom:** The project already has a `CLAUDE.md` but it wasn't created by the Stringz Workflow — it may be a generic project config or another framework's format.
+
+**How to fix:**
+1. **Don't delete it.** Read it first — it may contain valuable project-specific rules.
+2. Merge its content into a Stringz-format CLAUDE.md:
+   ```
+   This project has a CLAUDE.md but it's not in Stringz Workflow format.
+   Read the existing CLAUDE.md and merge its rules into a new CLAUDE.md
+   based on the Stringz CLAUDE.md.template. Preserve all existing rules
+   and add the Stringz structure around them.
+   ```
+3. The onboarding prompt will detect this and ask before overwriting.
