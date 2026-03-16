@@ -25,7 +25,7 @@ If no modules are listed, scan the codebase:
 
 Also read `SPEC.md` if it exists for additional module/feature details.
 
-**IMPORTANT:** Do NOT output actual passwords or secrets. Only reference WHERE credentials are stored (e.g., "Credentials are in .env.local" or "Check 1Password under [project name]").
+**IMPORTANT:** Do NOT output actual passwords or secrets. Only reference WHERE credentials are stored (e.g., "Credentials are in .env.local" or "Check 1Password under [project name]"). If the credentials location references a file (e.g., `.env.local`, `.env`), do NOT read or output its contents. Only tell the user where to find them.
 
 ## Step 2: Generate the Accumulator Setup Prompt
 
