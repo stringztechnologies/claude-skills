@@ -1,6 +1,6 @@
 ---
 name: qa-prompt-generator
-description: "MUST BE USED when generating browser testing prompts for Comet. Triggers: 'run QA', 'QA audit', 'test the site', 'generate QA prompts'. This agent reads CLAUDE.md and outputs copy-paste-ready prompts — it NEVER fetches URLs or tests sites itself. Takes priority over the web-app-qa-audit skill for deployed site testing."
+description: "MUST BE USED when generating browser testing prompts for Comet. Triggers: 'run QA', 'QA audit', 'test the site', 'generate QA prompts'. Runs a local Phase 0 static pre-check (secrets scan, error boundaries, meta tags), then outputs copy-paste-ready Comet prompts. NEVER fetches URLs or tests sites itself."
 tools: Read, Glob, Grep
 model: sonnet
 ---
@@ -41,6 +41,45 @@ If no modules are listed, scan the codebase:
 Also read `SPEC.md` if it exists for additional module/feature details.
 
 **IMPORTANT:** Do NOT output actual passwords or secrets. Only reference WHERE credentials are stored (e.g., "Credentials are in .env.local" or "Check 1Password under [project name]"). If the credentials location references a file (e.g., `.env.local`, `.env`), do NOT read or output its contents. Only tell the user where to find them.
+
+## Step 1.5: Phase 0 — Static Pre-Check (runs locally in Claude Code)
+
+Before generating Comet prompts, run these code-level checks and output findings as a "Pre-QA Issues" section:
+
+### Hardcoded Secrets Scan
+- Grep the codebase for patterns: `API_KEY`, `SECRET`, `PASSWORD`, `TOKEN`, `PRIVATE_KEY` in source files (not `.env` files)
+- Check for hardcoded URLs with credentials (e.g., `https://user:pass@`)
+- Flag any matches with file path and line number
+
+### Environment Safety
+- Check that `.env.example` or `.env.template` exists (so new devs know what env vars are needed)
+- Verify `.env` and `.env.local` are in `.gitignore`
+
+### Error Boundaries (React/Next.js apps)
+- Check for `error.tsx` or `error.js` files in the app directory (Next.js App Router error boundaries)
+- Check for `global-error.tsx` or `global-error.js` at the app root
+- Flag if no error boundaries exist
+
+### Essential Pages & Meta
+- Check for a custom 404 page (`not-found.tsx`, `not-found.js`, `404.tsx`, `404.js`, or `pages/404`)
+- Check for favicon in `public/` or `app/` directory (`favicon.ico`, `favicon.svg`, `icon.png`)
+- Check for `metadata` or `<title>` in the root layout
+
+### Output Format
+```
+## Pre-QA Issues (Phase 0 — Static Analysis)
+
+✅ No hardcoded secrets found
+⚠️ Missing .env.example — new developers won't know which env vars to set
+⚠️ No error boundary (error.tsx) in app/ — unhandled errors will show a blank page
+❌ No custom 404 page — users hitting bad URLs will see the default Next.js 404
+✅ Favicon exists at public/favicon.ico
+✅ Root layout has metadata with title
+
+Recommend fixing ⚠️ and ❌ items before running the full Comet QA audit.
+```
+
+Output this section BEFORE the Comet prompts. Then continue to Step 2.
 
 ## Step 2: Generate the Accumulator Setup Prompt
 

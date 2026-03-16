@@ -12,9 +12,9 @@ Instead of manually filling in brackets, run this in Claude Code from your proje
 Use the qa-prompt-generator agent to generate my QA prompts.
 ```
 
-Claude reads your CLAUDE.md, fills in the URL, modules, and credentials reference, and outputs all 8 prompts organized in 3 batches — ready to paste into Comet.
+Claude reads your CLAUDE.md, fills in the URL, modules, and credentials reference, runs a **Phase 0 static pre-check** (scans for hardcoded secrets, missing error boundaries, missing 404 page, favicon, etc.), then outputs all 8 prompts organized in 3 batches — ready to paste into Comet.
 
-If you prefer to fill in the prompts manually, continue reading below.
+Fix any Phase 0 issues before running the Comet audit. If you prefer to fill in the prompts manually, continue reading below.
 
 ---
 

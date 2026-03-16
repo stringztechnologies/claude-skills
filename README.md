@@ -82,7 +82,6 @@ Reusable domain knowledge that compounds across projects:
 | `notification-queue` | Messaging | Scheduled reminders, multi-channel |
 | `mobile-first-dashboard` | UI/UX | Phone-first admin dashboard |
 | `fullstack-agent-squad` | Dev Process | Agent orchestration patterns |
-| `web-app-qa-audit` | QA | Systematic testing of deployed apps |
 | `cloudflare-site-crawler` | Design | Extract design tokens from websites |
 
 ## Agents (11)

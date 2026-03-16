@@ -304,7 +304,7 @@ Phase 6: repo-scorer ──────── Final: "67/70. Grade: A."
 
 ## How Skills Compound
 
-**Project 1 (Arman Apartments):** Created 8 skills — supabase-nextjs-fullstack, multi-currency-ledger, property-management-core, notification-queue, mobile-first-dashboard, fullstack-agent-squad, web-app-qa-audit, cloudflare-site-crawler.
+**Project 1 (Arman Apartments):** Created 7 skills — supabase-nextjs-fullstack, multi-currency-ledger, property-management-core, notification-queue, mobile-first-dashboard, fullstack-agent-squad, cloudflare-site-crawler. QA testing is handled by the qa-prompt-generator agent (generates Comet browser prompts) rather than a skill.
 
 **Project 2 (hypothetical Azure project):** Would create new skills — azure-landing-zone, terraform-modules. The workflow, agents, and templates still apply.
 

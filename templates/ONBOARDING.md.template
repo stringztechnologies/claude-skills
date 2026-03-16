@@ -74,8 +74,8 @@ After onboarding, you'll have:
 
 If the app is live, also run:
 ```
-Use the web-app-qa-audit skill to audit [LIVE_URL].
-Login: [EMAIL] / [PASSWORD]
+Use the qa-prompt-generator agent to generate QA prompts for [LIVE_URL].
+Then paste the prompts into Comet (Perplexity browser agent) to test.
 ```
 This gives you a P0-P3 bug list to add to TASKS.md.
 
