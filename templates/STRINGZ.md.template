@@ -116,6 +116,11 @@ When running in YOLO or autonomous mode:
 - Make reasonable decisions and log them to KNOWLEDGE.md
 - Never block waiting for user input — decide, act, document
 
+## Command Shortcuts
+- **"run QA"** or **"start QA"** → Use the qa-prompt-generator agent (`~/.claude/agents/qa-prompt-generator.md`). Read CLAUDE.md, extract project details, output pre-filled Comet prompts in 3 batches. Do NOT test the site yourself.
+- **"onboard"** or **"onboard this project"** → Analyze codebase, generate CLAUDE.md, KNOWLEDGE.md, REVIEW.md, TASKS.md, run repo-scorer
+- **"run preflight"** → Execute the PREFLIGHT checklist
+
 ## Communication Preferences
 - [YOUR PREFERENCES — e.g., "Be concise", "Show code first", "Don't summarize"]
 - [ADD OR REMOVE LINES AS NEEDED]
@@ -126,3 +131,7 @@ When starting a conversation on Claude Desktop or web, paste:
 I'm [YOUR NAME] from [YOUR COMPANY]. I follow the Stringz Workflow v2
 (Level 5 Agent-First Engineering). Framework: [YOUR REPO URL]
 ```
+
+---
+
+> **After updating the framework repo**, run `./update.sh` to sync the new STRINGZ.md template. Or manually add the Command Shortcuts section to `~/.claude/STRINGZ.md`.
