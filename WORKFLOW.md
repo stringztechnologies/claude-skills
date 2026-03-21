@@ -175,6 +175,16 @@ CONTEXT MANAGEMENT:
   - Never operate above 70% context usage
 ```
 
+### Wave Completion Definition:
+
+After each wave, Claude Code should automatically:
+1. Update TASKS.md checkboxes to reflect completed work
+2. Run code-reviewer agent before any merge
+3. Clean up the wave branch after merge
+4. Update KNOWLEDGE.md with any decisions made during the wave
+
+These are not optional steps — they are part of the wave completion definition. A wave is not done until TASKS.md is updated and the branch is merged.
+
 ### Wave Template Prompt:
 ```
 /sc:implement "[Phase description from TASKS.md]"
